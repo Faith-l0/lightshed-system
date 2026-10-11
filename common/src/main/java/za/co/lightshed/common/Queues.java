@@ -3,6 +3,8 @@ package za.co.lightshed.common;
 public final class Queues {
     /** Queue that all services publish alerts to; the Monitor service consumes it. */
     public static final String PANIC = "panic.alerts";
+    /** Topic the Stage service publishes to; the AlertBot subscribes to it. */
+    public static final String STAGE_TOPIC = "stage.changes";
     public static final String DEFAULT_BROKER_URL = "tcp://localhost:61616";
 
     private Queues() {}

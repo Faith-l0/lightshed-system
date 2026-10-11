@@ -12,5 +12,6 @@
     <module>stage</module>
     <module>schedule</module>
     <module>monitor</module>
+    <module>alertbot</module>
   </modules>
 </project>

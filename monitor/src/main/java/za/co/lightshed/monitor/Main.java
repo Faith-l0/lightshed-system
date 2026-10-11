@@ -40,6 +40,7 @@ public class Main {
         checks.put("placename", HttpHealthCheck.of("http://localhost:7001"));
         checks.put("stage", HttpHealthCheck.of("http://localhost:7002"));
         checks.put("schedule", HttpHealthCheck.of("http://localhost:7003"));
+        checks.put("alertbot", HttpHealthCheck.of("http://localhost:7005"));
         var monitor = new HealthMonitor(checks, new ThrottledAlertPublisher(new JmsAlertPublisher(brokerUrl), 30_000));
         Executors.newSingleThreadScheduledExecutor(r -> {
             Thread t = new Thread(r, "health-monitor");
