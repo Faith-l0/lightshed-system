@@ -12,6 +12,7 @@ public class Main {
 
     public static Javalin createApp(StageService service) {
         return Javalin.create()
+                .get("/health", ctx -> ctx.json(Map.of("status", "UP")))
                 .get("/stage", ctx -> ctx.json(Map.of("stage", service.current())))
                 .post("/stage", ctx -> {
                     StageRequest req;

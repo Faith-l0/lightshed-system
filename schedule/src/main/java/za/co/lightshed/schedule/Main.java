@@ -1,6 +1,9 @@
 package za.co.lightshed.schedule;
 
 import io.javalin.Javalin;
+import za.co.lightshed.common.JmsAlertPublisher;
+import za.co.lightshed.common.Queues;
+import za.co.lightshed.common.ThrottledAlertPublisher;
 
 import java.util.Map;
 import java.util.Optional;
@@ -11,6 +14,7 @@ public class Main {
     public static Javalin createApp(PlaceLookup places, StageLookup stages) {
         ScheduleGenerator generator = new ScheduleGenerator();
         Javalin app = Javalin.create();
+        app.get("/health", ctx -> ctx.json(Map.of("status", "UP")));
 
         // GET /schedule/{province}/{town}            -> uses the current stage from the Stage service
         // GET /schedule/{province}/{town}?stage=4    -> uses the stage you give
@@ -52,6 +56,9 @@ public class Main {
         String placeUrl = System.getProperty("placename.url", "http://localhost:7001");
         String stageUrl = System.getProperty("stage.url", "http://localhost:7002");
         int port = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
-        createApp(new HttpPlaceLookup(placeUrl), new HttpStageLookup(stageUrl)).start(port);
+        var alerts = new ThrottledAlertPublisher(new JmsAlertPublisher(Queues.brokerUrl()), 30_000);
+        PlaceLookup places = new ResilientPlaceLookup(new HttpPlaceLookup(placeUrl), alerts, 3, 200);
+        StageLookup stages = new ResilientStageLookup(new HttpStageLookup(stageUrl), alerts, 3, 200);
+        createApp(places, stages).start(port);
     }
 }

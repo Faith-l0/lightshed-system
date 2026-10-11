@@ -11,6 +11,7 @@ public class Main {
 
     public static Javalin createApp(PlaceNameService service) {
         return Javalin.create()
+                .get("/health", ctx -> ctx.json(java.util.Map.of("status", "UP")))
                 .get("/provinces", ctx -> ctx.json(service.provinces()))
                 .get("/towns", ctx -> ctx.json(service.all()))
                 .get("/towns/{province}", ctx -> {

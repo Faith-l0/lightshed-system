@@ -6,8 +6,11 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
+    <module>common</module>
+    <module>broker</module>
     <module>placename</module>
     <module>stage</module>
     <module>schedule</module>
+    <module>monitor</module>
   </modules>
 </project>
